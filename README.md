@@ -10,7 +10,7 @@ La API key nunca está visible en el navegador.
 ```bash
 npm install                    # instalar @google/generative-ai
 cp .env.example .env          # crear .env con tu API key (editar el archivo)
-vercel dev                     # levantar en http://localhost:3000
+npm run local                  # levantar Vercel Dev en http://localhost:3000
 ```
 
 Abrir `http://localhost:3000` → click en "Generá un chiste" → la serverless function llama a Gemini → se muestra el chiste.
@@ -90,8 +90,33 @@ En el navegador:
 
 | Problema | Solución |
 |----------|----------|
-| `vercel dev` no arranca | `npm install -g vercel` |
-| Error "GEMINI_API_KEY no configurada" | Crear `.env` con la key real + reiniciar `vercel dev` |
+| `npm run dev` da error recursivo | Usar `npm run local` o `npx --yes vercel dev` |
+| `vercel dev` no arranca | Usar `npx --yes vercel dev` o instalar `npm install -g vercel` |
+| Error "GEMINI_API_KEY no configurada" | Crear `.env` con la key real + reiniciar Vercel Dev |
 | Gemini devuelve error 429 | Rate limit del free tier, esperar 1 minuto |
 | Funciona en local pero no en producción | Verificar Environment Variables en Vercel Dashboard → redeploy |
 | Cannot find module @google/generative-ai | `npm install` desde la raíz del proyecto |
+
+---
+
+## Nota sobre `npm run dev`
+
+No usar `npm run dev` en este proyecto.
+
+Si `package.json` define `"dev": "vercel dev"`, Vercel detecta una invocación recursiva y corta el arranque con este error:
+
+```txt
+vercel dev must not recursively invoke itself
+```
+
+Por eso el script se llama `local`:
+
+```bash
+npm run local
+```
+
+También podés correr directamente:
+
+```bash
+npx --yes vercel dev
+```
